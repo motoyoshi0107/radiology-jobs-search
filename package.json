@@ -8,7 +8,7 @@
     "client:dev": "cd client && npm run dev",
     "build": "cd client && npm run build",
     "start": "node server/index.js",
-    "vercel-build": "cd client && npm install && npm run build",
+    "vercel-build": "npm run build",
     "test": "vitest"
   },
   "dependencies": {
