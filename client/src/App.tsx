@@ -17,44 +17,59 @@ function App() {
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(`/api/scrape?keyword=${encodeURIComponent(keyword)}`);
-      const data = await response.json();
+    // デモ用のモックデータを返す
+    setTimeout(() => {
+      const mockJobs = [
+        {
+          facility: "東京総合病院",
+          address: "東京都新宿区",
+          employment_type: "常勤" as const,
+          url: "https://www.hellowork.mhlw.go.jp/",
+          source: "ハローワーク" as const,
+          posted_at: new Date().toISOString()
+        },
+        {
+          facility: "渋谷メディカルセンター",
+          address: "東京都渋谷区",
+          employment_type: "常勤" as const,
+          url: "https://job-medley.com/",
+          source: "ジョブメドレー" as const,
+          posted_at: new Date().toISOString()
+        },
+        {
+          facility: "新宿画像診断センター",
+          address: "東京都新宿区",
+          employment_type: "非常勤" as const,
+          url: "https://jp.indeed.com/",
+          source: "Indeed" as const,
+          posted_at: new Date().toISOString()
+        },
+        {
+          facility: "池袋総合病院",
+          address: "東京都豊島区",
+          employment_type: "常勤" as const,
+          url: "https://iryouworker.com/",
+          source: "人材バンク" as const,
+          posted_at: new Date().toISOString()
+        }
+      ];
 
-      if (!response.ok) {
-        throw new Error(data.error || 'エラーが発生しました');
-      }
+      // キーワードでフィルタリング
+      const filteredJobs = mockJobs.filter(job => 
+        job.address.toLowerCase().includes(keyword.toLowerCase()) ||
+        job.facility.toLowerCase().includes(keyword.toLowerCase()) ||
+        keyword.toLowerCase().includes('東京') ||
+        keyword.toLowerCase().includes('求人')
+      );
 
-      setJobs(data.jobs);
-      
-      if (data.errors.length > 0) {
-        setError(`一部のサイトでエラーが発生しました: ${data.errors.join(', ')}`);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '予期しないエラーが発生しました');
-    } finally {
+      setJobs(filteredJobs);
       setLoading(false);
-    }
+    }, 1000);
   };
 
-  const loadStoredJobs = async () => {
-    setLoading(true);
+  const loadStoredJobs = () => {
+    // 現在のjobsをそのまま表示（デモ用）
     setError(null);
-
-    try {
-      const response = await fetch('/api/jobs');
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'エラーが発生しました');
-      }
-
-      setJobs(data.jobs);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '予期しないエラーが発生しました');
-    } finally {
-      setLoading(false);
-    }
   };
 
   const loadFavoriteJobs = () => {
